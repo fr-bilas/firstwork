@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My News Website</title>
+  <script type="module">
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    // তোমার Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAaLtWwkWlyhSbkI7Shb_3FvM2UOaWu2QU",
+      authDomain: "firstwork-7413c.firebaseapp.com",
+      projectId: "firstwork-7413c",
+      storageBucket: "firstwork-7413c.firebasestorage.app",
+      messagingSenderId: "414957973655",
+      appId: "1:414957973655:web:bc7cbad29ad3baed02f9d2",
+      measurementId: "G-RZ4HF0G4MS"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 🔹 Real-time listener (Firestore থেকে ডেটা পড়বে)
+    const container = document.getElementById("news-container");
+    onSnapshot(collection(db, "news"), (snapshot) => {
+      container.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const item = doc.data();
+        const div = document.createElement("div");
+        div.classList.add("news-item");
+        div.innerHTML = `
+          <h2>${item.title}</h2>
+          <p>${item.description}</p>
+          ${item.image ? `<img src="${item.image}" alt="News Image">` : ""}
+          ${item.video ? `<iframe src="${item.video}" allowfullscreen></iframe>` : ""}
+        `;
+        container.appendChild(div);
+      });
+    });
+  </script>
+  <style>
+    body {font-family: Arial; background: #f9f9f9; margin:0;}
+    header {background:#0077cc;color:white;padding:15px;text-align:center;}
+    .container {width:90%;max-width:900px;margin:20px auto;}
+    .news-item {background:white;padding:15px;margin-bottom:20px;border-radius:5px;}
+    .news-item img {max-width:100%;}
+    iframe {width:100%;height:350px;}
+  </style>
+</head>
+<body>
+  <header><h1>📰 My News Portal</h1></header>
+  <div class="container" id="news-container"></div>
+</body>
+</html>
